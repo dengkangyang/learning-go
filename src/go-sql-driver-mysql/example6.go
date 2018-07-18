@@ -20,22 +20,19 @@ func main() {
 		fmt.Println("Ping err: ", err)
 	}
 
-	// idAry := []string{"yeheng003", "yeheng001", "wddg1k"}
-	idAry := []string{"yeheng003"}
-	ids := strings.Join(idAry, ",")
-	// ids = "'" + ids + "'"
-	fmt.Println("ids===", ids)
-	sqlRaw := `SELECT id, resource_id, resource_type FROM t_resource WHERE resource_id IN (?) OR id IN (?)`
-	rows, err := db.Query(sqlRaw, ids, ids)
-	cols, _ := rows.Columns()
-	log.Print("cols len: ", len(cols))
+	idAry := []string{"yeheng003", "yeheng001", "wddg1k"}
+	ids := strings.Join(idAry, "','")
+	sqlRaw := fmt.Sprintf(`SELECT id, resource_id, resource_type FROM t_resource WHERE resource_id IN ('%s') OR id IN ('%s')`, ids, ids)
+	rows, err := db.Query(sqlRaw)
+
+	// log.Print("cols len: ", len(cols))
 
 	if err != nil {
 		log.Errorf("SQL t_resource error:%s", err)
 	} else {
 		fmt.Println("here")
 		for rows.Next() {
-			fmt.Println("ininininin")
+			cols, _ := rows.Columns()
 			buff := make([]interface{}, len(cols)) // 临时slice
 			vals := make([]string, len(cols))      // 存数据slice
 			for i, _ := range buff {
