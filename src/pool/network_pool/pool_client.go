@@ -32,27 +32,36 @@ func main() {
 	}
 
 	// 从连接池中获取一个连接
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 100; i++ {
 		// i := 0
 		// for {
-		v, err := p.Get()
-		if err != nil {
-			panic(err)
-		}
+		go func() {
 
-		conn := v.(net.Conn)
-		// time.Sleep(1 * time.Second)
-		conn.Write([]byte("Hello World!\n"))
+			for i := 0; i < 1000; i++ {
+				time.Sleep(1 * time.Second)
+				v, err := p.Get()
+				if err != nil {
+					panic(err)
+				}
 
-		// 将连接放回连接池中
-		p.Put(v)
+				conn := v.(net.Conn)
+				// time.Sleep(1 * time.Second)
+				conn.Write([]byte("Hello World!\n"))
 
-		// 释放连接池中的所有连接
-		// p.Release()
-		// i++
-		fmt.Println(i)
-		// current := p.Len()
-		// fmt.Println("len=", current)
+				// 将连接放回连接池中
+				p.Put(v)
+
+				// 释放连接池中的所有连接
+				// p.Release()
+				// i++
+				fmt.Println(i)
+				// current := p.Len()
+				// fmt.Println("len=", current)
+			}
+		}()
+
 	}
+
+	select {}
 
 }
