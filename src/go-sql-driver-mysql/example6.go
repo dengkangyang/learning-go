@@ -25,8 +25,6 @@ func main() {
 	sqlRaw := fmt.Sprintf(`SELECT id, resource_id, resource_type FROM t_resource WHERE resource_id IN ('%s') OR id IN ('%s')`, ids, ids)
 	rows, err := db.Query(sqlRaw)
 
-	// log.Print("cols len: ", len(cols))
-
 	if err != nil {
 		log.Errorf("SQL t_resource error:%s", err)
 	} else {
